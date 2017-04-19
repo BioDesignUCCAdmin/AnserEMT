@@ -4,17 +4,17 @@
 
 
 
-% Settings
+% Settings for the tracking system
 sensorChannel = 4;   % DAQ channel is 4. Physical connector is 2. TODO: Need to create header mapping.
 sensorIndex = 2;
 refreshRate = 100;
 
-% Enable OpenIGTLink connection.
+% Enable OpenIGTLink connection
 igtEnable = 0;
 transformName = 'ProbeToTracker';
 
 
-%% Variables for positions
+% Variables for storing positions
 position = zeros(1, 5);
 igtTranform = zeros(4, 4, 1);
 
