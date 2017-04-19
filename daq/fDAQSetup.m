@@ -1,4 +1,8 @@
-function NIDAQ = fDAQSetup(sampleFreq, channels, DAQType, numSamples)
+% Anser EMT, the worlds first open-source electromagnetic tracking system.
+% Copyright (c) 2017, Alex Jaeger, Kilian O'Donoghue
+% All rights reserved.
+% This code is licensed under the BSD 3-Clause License.
+
 % fDAQSetup: Configures the Data Acquisition Unit to the settings specified by the user
 % sampleFreq = The desired sampling frequency of the DAQ device
 % channels   = An array of channels identifiers for DAQ inputs

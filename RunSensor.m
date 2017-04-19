@@ -1,3 +1,8 @@
+% Anser EMT, the worlds first open-source electromagnetic tracking system.
+% Copyright (c) 2017, Alex Jaeger, Kilian O'Donoghue
+% All rights reserved.
+% This code is licensed under the BSD 3-Clause License.
+
 % Run the system for a single sensor.
 % Use this script as a starting point for writing applications with the
 % tracking system.

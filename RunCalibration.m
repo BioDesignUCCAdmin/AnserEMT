@@ -1,3 +1,8 @@
+% Anser EMT, the worlds first open-source electromagnetic tracking system.
+% Copyright (c) 2017, Alex Jaeger, Kilian O'Donoghue
+% All rights reserved.
+% This code is licensed under the BSD 3-Clause License.
+
 % Run a real-time fast-fourier tranform a single sensor.
 % Use this script to calibrate the tracking system using 49 predefined
 % testpoints generated during system initialisation.

@@ -1,3 +1,8 @@
+% Anser EMT, the worlds first open-source electromagnetic tracking system.
+% Copyright (c) 2017, Alex Jaeger, Kilian O'Donoghue
+% All rights reserved.
+% This code is licensed under the BSD 3-Clause License.
+
 function [Hx,Hy,Hz]= spiralCoilFieldCalcMatrix(I,x_points,y_points,z_points,Px,Py,Pz)
 % spiralCoilFieldCalcMatrix.m
 % Calculates the magnetic field due a straight current filament at an arbitary orientation relative to an origin

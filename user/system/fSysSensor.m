@@ -1,3 +1,8 @@
+% Anser EMT, the worlds first open-source electromagnetic tracking system.
+% Copyright (c) 2017, Alex Jaeger, Kilian O'Donoghue
+% All rights reserved.
+% This code is licensed under the BSD 3-Clause License.
+
 function sys = fSysSensor(sys, sensorNo )
 % fSysSensor.m
 % Changes the state of the system object for processing of different sensor

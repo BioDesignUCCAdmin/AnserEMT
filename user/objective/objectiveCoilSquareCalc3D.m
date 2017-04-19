@@ -1,3 +1,8 @@
+% Anser EMT, the worlds first open-source electromagnetic tracking system.
+% Copyright (c) 2017, Alex Jaeger, Kilian O'Donoghue
+% All rights reserved.
+% This code is licensed under the BSD 3-Clause License.
+
 function [out]= objectiveCoilSquareCalc3D(currentPandO, sys, fluxReal)
 % objectiveCoilSquareCalc3D.m
 % Objective function to calculate the difference between the modelled and measured magnetic flux values due to a single pcb emitter coil.

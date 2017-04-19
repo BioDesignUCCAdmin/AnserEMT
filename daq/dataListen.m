@@ -1,3 +1,8 @@
+% Anser EMT, the worlds first open-source electromagnetic tracking system.
+% Copyright (c) 2017, Alex Jaeger, Kilian O'Donoghue
+% All rights reserved.
+% This code is licensed under the BSD 3-Clause License.
+
 function dataListen(src, event)
 % dataListen.m
 % This function is called as an event handle whenever the DAQ acquires the desired number of samples.

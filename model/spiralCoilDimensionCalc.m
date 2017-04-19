@@ -1,3 +1,8 @@
+% Anser EMT, the worlds first open-source electromagnetic tracking system.
+% Copyright (c) 2017, Alex Jaeger, Kilian O'Donoghue
+% All rights reserved.
+% This code is licensed under the BSD 3-Clause License.
+
 function [x_points_out,y_points_out,z_points_out] = spiralCoilDimensionCalc(N,length,width,spacing,thickness,angle)
 % spiralCoilDimensionCalc.m
 % Generates the coordinates of the printed circuit board emitter coil.
