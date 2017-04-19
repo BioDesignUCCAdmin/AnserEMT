@@ -5,8 +5,9 @@
 
 
 % Settings
-sensorNo = 1;
-refreshRate = 20;
+sensorChannel = 4;   % DAQ channel is 4. Physical connector is 2. TODO: Need to create header mapping.
+sensorIndex = 2;
+refreshRate = 100;
 
 % Enable OpenIGTLink connection.
 igtEnable = 0;
@@ -14,8 +15,8 @@ transformName = 'ProbeToTracker';
 
 
 %% Variables for positions
-position = zeros(N, 5);
-igtTranform = zeros(4, 4, N);
+position = zeros(1, 5);
+igtTranform = zeros(4, 4, 1);
 
 
 %% Enable OpenIGTLink connection
@@ -27,8 +28,8 @@ end
 % Initialise the tracking system. Channel 0 is always required.
 % Desired channels are passed in a single vector. For only one sensor the
 % vector [0, X] is passed, where X is the index of the desired sensor.
-sys = fSysSetup([0,sensorNo], 'session', 'portable');
-pause(1);
+sys = fSysSetup([0,sensorChannel], 'session', 'portable');
+pause(3);
 
 %% Main loop.
 % This loop is cancelled cleanly using the 3rd party stoploop function.
@@ -43,7 +44,7 @@ while (~FS.Stop())
    % Print the position vector on the command line. The format of the
    % vector is [x,y,z,theta,phi]
    sys = fSysDAQUpdate(sys);
-   position = fGetSensorPosition(sys, sensorNo);
+   position = fGetSensorPosition(sys, sensorIndex);
    sys.estimateInit1 = position;
    disp(position);
    
@@ -77,7 +78,7 @@ while (~FS.Stop())
    end
 
    toc
-   pause(1/refreshRate);
+   pause(0.001);
    % Clear the screen.
    clc;
 end

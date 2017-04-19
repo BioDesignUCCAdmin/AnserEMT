@@ -40,6 +40,7 @@ function F = stoploop(str)
 
 % History:
 % 1.0 (jun 2008) Inspired by several requests over the years on CSSM
+% Modified by Alex Jaeger as part of Anser EMT, 2017
 
 error(nargoutchk(1,1,nargout)) ;
 
@@ -50,11 +51,11 @@ if nargin,
     end
 else
     % default message string
-    str = 'Stop the Loop' ;
+    str = 'Stop tracking' ;
 end
 
 % create a msgbox displaying the string
-H = msgbox(str,'STOPLOOP') ;
+H = msgbox(str,'STOPTRACKING') ;
 
 % create the two anonymous functions
 F.Stop = @() stopfun(H) ; % false if message box still exists

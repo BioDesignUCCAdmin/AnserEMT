@@ -6,7 +6,7 @@ function sys = fSysGetField(sys)
 
 % sys = The system object with updated magnetic field strength values.
 
-dataColumn = sys.SensorNo + 1;
+numSensors = length(sys.DAQchannels) - 1;
 
 % Number of emitter coils in system.
 numCoils = 8;
@@ -14,7 +14,9 @@ numCoils = 8;
 % The reference coil current sample data
 X(:,1) = sys.rawData(:,1);
 % The data from the currently selected tracking sensor coil
-X(:,2) = sys.rawData(:, dataColumn);
+for i = 2:numSensors+1
+    X(:,i) = sys.rawData(:, i);
+end
 
 % Transpose X for multiplication
 X = X';
