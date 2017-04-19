@@ -29,7 +29,7 @@ Bz=sys.u0.*Hz;
 
 
 % Calculate the net magnetic flux cutting the tracking sensor coil.
-fluxModel=(sys.BScaleActive)'.*(sys.Iout'./sys.Rstore').*(Bx.*sin(theta).*cos(phi)+By.*sin(theta).*sin(phi)+Bz.*cos(theta));
+fluxModel=(sys.BScaleActive)'.*(Bx.*sin(theta).*cos(phi)+By.*sin(theta).*sin(phi)+Bz.*cos(theta));
 
 
 % Return the difference between the calculated magnetic flux and the sensed magnetic flux due to a single emitter coil

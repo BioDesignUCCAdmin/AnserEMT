@@ -14,12 +14,9 @@ function solution = fSysDecodeField(sys)
 objectiveCoil3D = @(currentPandO)objectiveCoilSquareCalc3D(currentPandO, sys, sys.BField);
     
     % Set the boundry conditions for the solver.
-    if strcmpi(sys.model, 'portable')
-        lowerbound = [-.25, -.25, 0, -2*pi, -2*pi];
-        upperbound = [.25, .25, 0.5, 2*pi, 2*pi];
-    else
-        error('Please specify the hardware setup being used') 
-    end
+
+    lowerbound = [-.25, -.25, 0, -2*pi, -2*pi];
+    upperbound = [.25, .25, 0.5, 2*pi, 2*pi];
 
     % Initialises the least squares solver.
     [solution,resnorm_store]= lsqnonlin(objectiveCoil3D, sys.estimateInit,lowerbound,upperbound,sys.lqOptions);

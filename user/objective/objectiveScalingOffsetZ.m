@@ -41,7 +41,7 @@ Bz = sys.u0 * Hz * Bscale;
 
 
 % Vectorise each component.
-BVectorised = (sys.Iout(coilIndex)'./sys.Rstore(coilIndex)').*Bz;
+BVectorised = Bz;
 
 
 % Returns the difference between the sensed and modelled flux in the z-direction at each test point, due toa single PCB emitter coil..

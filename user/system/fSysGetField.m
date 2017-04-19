@@ -47,7 +47,7 @@ end
 
 
 % Taking the sign of the phase difference and the magnetic field amplitude and a scaling factor, the magnetic field is determined 
-BField = sign(Phase1)'.*MagY(2,:)'./sys.Asens';
+BField = sign(Phase1)'.*MagY(2,:)'./sys.fieldGain';
 
 % Store the magnetic strengths in the system object.
 sys.BField = BField;

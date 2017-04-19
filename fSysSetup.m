@@ -25,14 +25,13 @@ end
 u0 = 4*pi*1e-7; %Magnetic permeability
 
 %% Define sensor parameters
-I_out_temp=load('data/I_store.mat');
-I_out=I_out_temp.I_out;
+% I_out_temp=load('data/I_store.mat');
+% I_out=I_out_temp.I_out;
 
-% Scaling vector for algortihm convergence.
-A_sens_2 = [1000000,1000000,1000000,1000000,1000000,1000000,1000000,1000000];
-
-
-I_summer_scale=2.0103; % scales the current from the current waveform summing circuit
+% Scaling vector for algortihm convergence. This vector is used to scales
+% the measured field strenths such that they lie within the same order of
+% magnitude as the model.
+fieldGain = ones(1,8) * 1e6;
 
 
 %% Define exact locations of each test point on the duplo board emmiter plate.
@@ -41,14 +40,6 @@ I_summer_scale=2.0103; % scales the current from the current waveform summing ci
 
 
 
-% More accurate version of the test points coordinates was found.
-
-%y = [ones(1,7)*96*1e-3  ones(1,7)*64*1e-3 ones(1,7)*32e-3  ones(1,7)*0 ones(1,7)*-32*1e-3 ones(1,7)*-64*1e-3 ones(1,7)*-96*1e-3 ]; %block width is 32mm
-
-% Block height is 19.2 mm. Zoffset will adjust this to improve accuracy
-% later on.
-% 15mm is approximate distance from duplo plate to transmitter
-
 % Specify no. of blocks used for the system calibration NOT including the sensor block
 % as this determines the z values of each testpoint. 
 calBlockNum = 5;
@@ -56,18 +47,19 @@ calBlockNum = 5;
 calSensorPosition = 0.5;
 
 
-% Total height in terms of blocks
+% Total height in terms of blocks. Dimensions in millimeters.
 calTowerBlocks  = calBlockNum + calSensorPosition;
 BlockHeight = 19.2;
 
 % Z axis of each testpoint is different due to thickness differences
 % of the emitter plates between the fixed and portable systems.
+% Definitions are in millimeters. Final x, y and z vectors are in meters
 if strcmpi(systemModel, 'portable') == 1
     x=[(-3:1:3)*(31.75e-3)]; 
     x=[x x x x x x x];
     y=[ones(1,7)*95.25*1e-3 ones(1,7)*63.5*1e-3  ones(1,7)*31.75*1e-3 ones(1,7)*0  ones(1,7)*-31.75*1e-3 ones(1,7)*-63.5*1e-3 ones(1,7)*-95.25*1e-3 ];
 
-    boardDepth = 15;
+    boardDepth = 15; % Millimeters
     z = (1e-3*(boardDepth + calTowerBlocks*BlockHeight)) * ones(1,49);
 elseif strcmpi(systemModel, 'fixed') == 1
     x = ([-3 -2 -1 0 1 2 3])*(32e-3) - 0.008; 
@@ -213,9 +205,9 @@ MA_store = repmat(x0,[MA_length 1]); %initially fill the filter taps with X0
 % functions later in the code.
 
 sys.u0 = u0;
-sys.Asens = A_sens_2;
-sys.Iout = I_out;
-sys.Rstore = R_store;
+sys.fieldGain = fieldGain;
+% sys.Iout = I_out;
+% sys.Rstore = R_store;
 
 sys.xtestpoint = x;
 sys.ytestpoint = y;
