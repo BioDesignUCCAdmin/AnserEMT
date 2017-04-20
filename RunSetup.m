@@ -14,4 +14,4 @@ global sessionData;
 % Calles the setup function for the tracking system. The returned object
 % contains all the information regarding the tracking system, including
 % coil dimensions, calibration data and the DAQ object.
-sys = fSysSetup([0,1,4], 'session', 'portable');
+sys = fSysSetup(['2'], 'nidaq6212');

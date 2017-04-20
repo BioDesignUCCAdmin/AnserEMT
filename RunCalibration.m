@@ -16,7 +16,7 @@ sensorNo = input('Enter the sensor to Calibrate: ');
 
 % Select the desired sensor. This will also ensure the appropriate calibration
 % parameters are saved after calibration.
-sys = fSysSensor(sys,sensorNo);
+sys = fSysSensor(sys, sensorNo);
 
 % Acquire the testpoints necessary for calibration.
 sys = fGetCalField(sys);

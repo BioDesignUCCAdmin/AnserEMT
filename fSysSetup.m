@@ -15,14 +15,14 @@
 % OUTPUT:   
 %       sys         - A structure containing the system settings (dimensions,
 %                    constants, frequencies etc
-function sys = fSysSetup(DAQchannels, DAQType, systemModel)
+function sys = fSysSetup(sensors, DAQType)
 
 % Adds adjacent directories to the workspace
 addpath(genpath(pwd))
 
 
 
-if (nargin ~= 3)
+if (nargin ~= 2)
     error('fSysSetup takes three arguements');
 end
 
@@ -56,23 +56,15 @@ BlockHeight = 19.2;
 % Z axis of each testpoint is different due to thickness differences
 % of the emitter plates between the fixed and portable systems.
 % Definitions are in millimeters. Final x, y and z vectors are in meters
-if strcmpi(systemModel, 'portable') == 1
-    x=[(-3:1:3)*(31.75e-3)]; 
-    x=[x x x x x x x];
-    y=[ones(1,7)*95.25*1e-3 ones(1,7)*63.5*1e-3  ones(1,7)*31.75*1e-3 ones(1,7)*0  ones(1,7)*-31.75*1e-3 ones(1,7)*-63.5*1e-3 ones(1,7)*-95.25*1e-3 ];
+x=[(-3:1:3)*(31.75e-3)]; 
+x=[x x x x x x x];
+y=[ones(1,7)*95.25*1e-3 ones(1,7)*63.5*1e-3  ones(1,7)*31.75*1e-3 ones(1,7)*0  ones(1,7)*-31.75*1e-3 ones(1,7)*-63.5*1e-3 ones(1,7)*-95.25*1e-3 ];
 
-    boardDepth = 15; % Millimeters
-    z = (1e-3*(boardDepth + calTowerBlocks*BlockHeight)) * ones(1,49);
-elseif strcmpi(systemModel, 'fixed') == 1
-    x = ([-3 -2 -1 0 1 2 3])*(32e-3) - 0.008; 
-    x = [x x x x x x x];
-    y = [ones(1,7)*95.25*1e-3, ones(1,7)*63.5*1e-3,  ones(1,7)*31.75*1e-3 ones(1,7)*0,  ones(1,7)*-31.75*1e-3, ones(1,7)*-63.5*1e-3, ones(1,7)*-95.25*1e-3 ];
-    
-    boardDepth = 11.5;
-    z = -(1e-3*(boardDepth + calTowerBlocks*BlockHeight)) * ones(1,49);
-else
-    error('Please specify the system model ("portable" or "fixed")');
-end
+boardDepth = 15; % Millimeters
+z = (1e-3*(boardDepth + calTowerBlocks*BlockHeight)) * ones(1,49);
+
+% error('Please specify the system model ("portable" or "fixed")');
+
 
 
 
@@ -181,7 +173,7 @@ G=repmat(f,2,1);
 %% NI DAQ Parameters
 % Initialise the DAQ unit and calculate the phase offsets between channels
 % due to the internal DAQ multiplexer
-NIDAQ = fDAQSetup(Fs,DAQchannels, DAQType, length(t));
+DAQ = fDAQSetup(Fs,sensors, DAQType, length(t));
 DAQ_phase_offset = (2*pi*F/400000); % determines the phase offset introduced by the DAQ multiplexer
 
 
@@ -200,13 +192,8 @@ yInit = 0;
 thetaInit = 0;
 phiInit = 0;
 
-if strcmpi(systemModel, 'portable') == 1
-    zInit = 0.15;
-elseif strcmpi(systemModel, 'fixed') == 1
-    zInit = -0.15;
-else
-    error('Specify system type ("Portable" or "Fixed")')
-end
+zInit = 0.15;
+
 
 % Define initial estimate of sensor position
 condInit = [xInit  yInit zInit  thetaInit phiInit]; 
@@ -233,10 +220,11 @@ sys.zcoil = z_matrix;
 
 sys.Fs = Fs;
 sys.DAQType = DAQType;
-sys.DAQchannels = DAQchannels;
-sys.NIDAQ = NIDAQ;
+sys.NIDAQ = DAQ;
 sys.DAQPhase = DAQ_phase_offset;
-sys.rawData = zeros(numSamples,length(DAQchannels));
+sys.rawData = zeros(numSamples,length(sensors));
+sys.Sensors = sensors;
+sys.MaxSensors = 16;
 
 sys.t = t;
 sys.F = F;
@@ -245,28 +233,23 @@ sys.G = G;
 
 sys.lqOptions = options;
 sys.residualThresh = resThreshold;
-sys.model = systemModel;
 
 sys.estimateInit = condInit;
-sys.MALength = MA_length;
-sys.MAStore = MA_store;
 
-sys.SensorNo = -1;
+sys.SensorNo = 1;
 
 % Preallocate memory for the sensor data
 sys.zOffsetActive = 0;
-sys.BStoreActive = zeros(49, 8);
+sys.BStoreActive = zeros(8, 49);
 sys.BScaleActive = [0,0,0,0,0,0,0,0];
 
-sys.zOffset1 = 0;
-sys.BStore1 = zeros(49, 8);
-sys.BScale1 = [0,0,0,0,0,0,0,0];
-sys.estimateInit1 = condInit;
+for i=1:sys.MaxSensors
+    index = i;
+    sys.zOffset(index) = 0;
+    sys.BStore(:,:,index) = zeros(8, 49);
+    sys.BScale(index, :) = [0,0,0,0,0,0,0,0];
+end
 
-sys.zOffset2 = 0;
-sys.BStore2 = zeros(49, 8);
-sys.BScale2 = [0,0,0,0,0,0,0,0];
-sys.estimateInit2 = condInit;
 
 
 
@@ -274,14 +257,17 @@ sys.estimateInit2 = condInit;
 if (exist('data/sys.mat', 'file') == 2)
     sysPrev = load('sys.mat');
     sysPrev = sysPrev.sys;
-    sys.BStore1 = sysPrev.BStore1;
-    sys.zOffset1 = sysPrev.zOffset1;
-    sys.BScale1 = sysPrev.BScale1;
-    
-    sys.BStore2 = sysPrev.BStore2;
-    sys.zOffset2 = sysPrev.zOffset2;
-    sys.BScale2 = sysPrev.BScale2;
-    
+    for i=1:sys.MaxSensors
+        sys.zOffset(i) = sysPrev.zOffset(i);
+        sys.BStore(:,:,i) = sysPrev.BStore(:,:,i);
+        sys.BScale(i,:) = sysPrev.BScale(i,:);
+    end
+else
+    for i=1:sys.MaxSensors
+        sys.zOffset(i) = 0;
+        sys.BStore(:,:,i) = zeros(8, 49);
+        sys.BScale(i,:) = [0,0,0,0,0,0,0,0];
+    end   
 end
 
 fSysSave(sys);

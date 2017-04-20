@@ -3,7 +3,7 @@
 % All rights reserved.
 % This code is licensed under the BSD 3-Clause License.
 
-function [positionVector, positionMatrix] = fGetSensorPosition(sys, sensorNo)
+function sys = fGetSensorPosition(sys, sensorNo)
 % fGetSensorPosition.m
 % Resolves the position of the tracking sensor coil.
 
@@ -30,6 +30,8 @@ positionVector = fSysDecodeField(sys);
 % Convert the vector to a homogenous transformation matrix.
 positionMatrix = fSphericalToMatrix(positionVector);
 
+sys.positionVector = positionVector;
+sys.positionMatrix = positionMatrix;
 
 
 end

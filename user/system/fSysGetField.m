@@ -11,7 +11,7 @@ function sys = fSysGetField(sys)
 
 % sys = The system object with updated magnetic field strength values.
 
-numSensors = length(sys.DAQchannels) - 1;
+numSensors = length(sys.Sensors);
 
 % Number of emitter coils in system.
 numCoils = 8;

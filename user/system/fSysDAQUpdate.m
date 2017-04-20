@@ -14,6 +14,6 @@ function sys = fSysDAQUpdate(sys)
 
 
 % Call fDAQAcquire to retrieve sample data. Assign this data to the system variable
-sys.rawData = fDAQAcquire(sys.NIDAQ, sys.DAQType);
+sys.rawData = fDAQAcquire();
 
 end

@@ -10,8 +10,7 @@
 
 
 % Settings for the tracking system
-sensorChannel = 4;   % DAQ channel is 4. Physical connector is 2. TODO: Need to create header mapping.
-sensorIndex = 2;
+sensorToTrack = 2;
 refreshRate = 100;
 
 % Enable OpenIGTLink connection
@@ -19,8 +18,8 @@ igtEnable = 0;
 transformName = 'ProbeToTracker';
 
 
-% Variables for storing positions
-position = zeros(1, 5);
+% Variables for storing sys.positionVectors
+sys.positionVector = zeros(1, 5);
 igtTranform = zeros(4, 4, 1);
 
 
@@ -33,7 +32,7 @@ end
 % Initialise the tracking system. Channel 0 is always required.
 % Desired channels are passed in a single vector. For only one sensor the
 % vector [0, X] is passed, where X is the index of the desired sensor.
-sys = fSysSetup([0,sensorChannel], 'session', 'portable');
+sys = fSysSetup(['2'], 'nidaq6212');
 pause(3);
 
 %% Main loop.
@@ -49,16 +48,16 @@ while (~FS.Stop())
    % Print the position vector on the command line. The format of the
    % vector is [x,y,z,theta,phi]
    sys = fSysDAQUpdate(sys);
-   position = fGetSensorPosition(sys, sensorIndex);
-   sys.estimateInit1 = position;
-   disp(position);
+   sys = fGetSensorPosition(sys, sensorToTrack);
+   sys.estimateInit1 = sys.positionVector;
+   disp(sys.positionVector);
    
    
    
       
     
    
-   % Prepare position for OpenIGTLink transmission
+   % Prepare sys.positionVector for OpenIGTLink transmission
    if(igtEnable == 1)
      
       % Rigid registration matrix.  
@@ -68,13 +67,13 @@ while (~FS.Stop())
                       0         0         0    1.0000];     
    
       % Add pi to theta angle. This resolved pointing issues.
-      position(4) = position(4) + pi;
+      sys.positionVector(4) = sys.positionVector(4) + pi;
       % Convert meters to millimeters. Required for many IGT packages
-      position(1:3) = position(1:3) * 1000;
+      sys.positionVector(1:3) = sys.positionVector(1:3) * 1000;
       % Convert from Spherical to Homogenous transformation matrix.
-      positionMatrix = fSphericalToMatrix(position); 
+      sys.positionVectorMatrix = fSphericalToMatrix(sys.positionVector); 
       % Applies registration for the IGT coordinate system.      
-      transform.matrix = sys.registration * positionMatrix;
+      transform.matrix = sys.registration * sys.positionVectorMatrix;
       % Generate a timestamp for the data and sent the transform through
       % the OpenIGTLink connection.
       transform.timestamp = igtlTimestampNow();

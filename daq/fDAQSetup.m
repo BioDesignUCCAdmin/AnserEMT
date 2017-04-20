@@ -8,50 +8,44 @@
 % channels   = An array of channels identifiers for DAQ inputs
 % DAQType    = A string describing the type of DAQ/Interface being used. by default the NI-USB DAQ is utilised with the Session interface
 % numSamples = The desired number of samples to gather for each sampling interval
- 
-% Configuration for the NI-USB 6216 DAQ 
-if (strcmpi(DAQType, 'SESSION')) 
+function DAQ = fDAQSetup(sampleFreq, sensors, DAQType, numSamples)
+
+
     
-    % Fixes clock synchronisation issue with DAQmx 14.0+
-    daq.reset
-    daq.HardwareInfo.getInstance('DisableReferenceClockSynchronization',true);
-    
-    
-    NIDAQ = daq.createSession('ni');
+% Fixes clock synchronisation issue with DAQmx 14.0+
+daq.reset
+daq.HardwareInfo.getInstance('DisableReferenceClockSynchronization',true);
 
-    % For the Anser EMT system
-    % Channel 1 is the emitter coil current sense.
-    % Channels 2, 3...is connected to the amplifier output of a tracking sensor
-    % Each channel is configured as a single-ended input.
+channelMap = fDAQMap(DAQType);
+DAQ = daq.createSession('ni');
 
-    ch1 = addAnalogInputChannel(NIDAQ,'Dev1', channels(1), 'Voltage');
-    ch1.TerminalConfig = 'SingleEnded';
-    ch2 = addAnalogInputChannel(NIDAQ,'Dev1', channels(2), 'Voltage');
-    ch2.TerminalConfig = 'SingleEnded';
-    if(length(channels) == 3)
-        ch3 = addAnalogInputChannel(NIDAQ,'Dev1', channels(3), 'Voltage');
-        ch3.TerminalConfig = 'SingleEnded';
-    end
-
-    % Set the sampling frequency, samples per scan and
-    NIDAQ.Rate = sampleFreq;
-    NIDAQ.NumberOfScans = numSamples;
-
-    % Set the DAQ to raise an internal event flag each time numSample samples are gathered
-    NIDAQ.NotifyWhenDataAvailableExceeds = numSamples;
-    
-    % Set the DAQ to acquire samples continuously
-    NIDAQ.IsContinuous = true;
-    % Create a function handle to dataListen.m to
-    myListen = @(src, event)dataListen(src, event);
-    % Set the handle to execute when the 'DataAvailable' event flag occurs
-    lh = addlistener(NIDAQ,'DataAvailable', myListen);
-    % Start the data acquisiton in the background.
-    NIDAQ.startBackground();
-
-else
-    error('DAQ Type incorrectly specified')
+% For the Anser EMT system
+% Channel 1 is the emitter coil current sense.
+% Channels 2, 3...is connected to the amplifier output of a tracking sensor
+% Each channel is configured as a single-ended input.
+ch(1) = addAnalogInputChannel(DAQ,'Dev1', 0, 'Voltage');
+ch(1).TerminalConfig = 'SingleEnded';
+for i = 1:length(sensors)
+    ch(i+1) = addAnalogInputChannel(DAQ,'Dev1', channelMap(sensors(i)), 'Voltage');
+    ch(i+1).TerminalConfig = 'SingleEnded';
 end
+
+% Set the sampling frequency, samples per scan and
+DAQ.Rate = sampleFreq;
+DAQ.NumberOfScans = numSamples;
+
+% Set the DAQ to raise an internal event flag each time numSample samples are gathered
+DAQ.NotifyWhenDataAvailableExceeds = numSamples;
+
+% Set the DAQ to acquire samples continuously
+DAQ.IsContinuous = true;
+% Create a function handle to dataListen.m to
+myListen = @(src, event)dataListen(src, event);
+% Set the handle to execute when the 'DataAvailable' event flag occurs
+lh = addlistener(DAQ,'DataAvailable', myListen);
+% Start the data acquisiton in the background.
+DAQ.startBackground();
+
 
 
 end

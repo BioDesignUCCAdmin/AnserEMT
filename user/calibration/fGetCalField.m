@@ -28,7 +28,9 @@ for i = 1:numPoints
     sys = fSysGetField(sys);
 
     % Store the field strength values
-    sys.BStoreActive(i, :) = sys.BField;
+    sys.BStoreActive(:, i) = sys.BField;
+    sys.BField
+   
     fprintf('Done\n');
 end
 

@@ -29,7 +29,7 @@ zOffsetAllCoils = [0,0,0,0,0,0,0,0];
 for coilNo = 1:numCoils
 
 	% Extract the field strengths at each testpoints due to coil 'coilNo'
-	calFieldCoil=sys.BStoreActive(:,coilNo)';
+	calFieldCoil=sys.BStoreActive(coilNo, :);
 
 	% Create new function handle for the emitter coil 'coilNo'.
 	% 'params' is specified as the variable parameter vector for the function. i.e. the algorithm will vary this vector for the minimisation process.
