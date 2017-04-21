@@ -1,7 +1,8 @@
 # AnserEMTCode
 Code for running the Anser EMT system
 
-##Structure
+Structure
+---------
 The system utilises a code structure based on the passing and returning of
 a single structure called 'sys'. This large structure contains all the parameters
 necessary for system operation.
