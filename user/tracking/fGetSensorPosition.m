@@ -30,6 +30,8 @@ positionVector = fSysDecodeField(sys);
 % Convert the vector to a homogenous transformation matrix.
 positionMatrix = fSphericalToMatrix(positionVector);
 
+% Set the initial conditions for the next iteration to the current position
+sys.estimateInit(sys.SensorNo,:) = positionVector;
 sys.positionVector = positionVector;
 sys.positionMatrix = positionMatrix;
 

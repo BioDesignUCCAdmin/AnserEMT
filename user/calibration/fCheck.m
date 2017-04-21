@@ -27,7 +27,7 @@ for i =1:length(sys.ztestpoint)
     % Set the initial position for the solver to the analytically predefined testpoint positions. Theta and Phi are initialised to zero, as the sensor is placed axially in the test block.
     x0 = [sys.xtestpoint(i),sys.ytestpoint(i), sys.ztestpoint(i), 0, 0];
     % Extract the field strength values sensed at a particular testpoint
-    fluxReal = sys.BStoreActive(i,:)';
+    fluxReal = sys.BStoreActive(:,i);
 	        
 	
     % Create new function handle for each testpoint to the magnetic field objective objective function.
@@ -38,11 +38,8 @@ for i =1:length(sys.ztestpoint)
     
     
     % Run the algorithm depending on the setup configuration.
-    if strcmpi(sys.model, 'portable') == 1
-        solution(i,:)= lsqnonlin(objectiveCoil3D,x0,[-.25 -.25 0 -pi -2*pi],[.25 .25 0.5 pi 2*pi],options);  
-    else   
-        error('Please select model of system');
-    end
+
+    solution(i,:)= lsqnonlin(objectiveCoil3D,x0,[-.25 -.25 0 -pi -2*pi],[.25 .25 0.5 pi 2*pi],options);  
     
 
 end

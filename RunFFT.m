@@ -11,7 +11,7 @@
 channelNo = 2;
 refreshRate = 200;
 
-
+global sessionData;
 figure;
 FS=stoploop();
 while (~FS.Stop())

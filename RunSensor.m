@@ -14,7 +14,7 @@ sensorsToTrack = [2,1];
 refreshRate = 100;
 
 % Enable option for OpenIGTLink connection
-igtEnable = 0;
+igtEnable = 1;
 transformName = 'ProbeToTracker';
 
 %% Enable OpenIGTLink connection
@@ -43,7 +43,6 @@ while (~FS.Stop())
    % vector is [x,y,z,theta,phi]
    sys = fSysDAQUpdate(sys);
    sys = fGetSensorPosition(sys, sensorsToTrack(1));
-   sys.estimateInit1 = sys.positionVector;
    disp(sys.positionVector);
    
    % Prepare to transmit sensor position over network.

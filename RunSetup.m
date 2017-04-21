@@ -8,5 +8,5 @@
 % Calls the setup function for the tracking system. The returned object
 % contains all the information regarding the tracking system, including
 % coil dimensions, calibration data and the DAQ object.
-sensorsToTrack = [2];
+sensorsToTrack = [1, 2];
 sys = fSysSetup(sensorsToTrack, 'nidaq621X');

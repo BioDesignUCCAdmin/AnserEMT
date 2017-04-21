@@ -12,12 +12,12 @@
 % Each sensor must be calibrated seperatly due to gain variations
 % in the system amplifier electronics.
 % Sensor indices begin at '1'
-sensorNo = input('Enter the sensor to Calibrate: ');
+sensorToCal = input('Enter the sensor to Calibrate: ');
 
 % Select the desired sensor. This will also ensure the appropriate calibration
 % parameters are saved after calibration.
-sys = fSysSetup(sensorsToTrack, 'nidaq6212');
-sys = fSysSensor(sys, sensorNo);
+sys = fSysSetup(sensorToCal, 'nidaq621X');
+sys = fSysSensor(sys, sensorToCal);
 
 % Acquire the testpoints necessary for calibration.
 sys = fGetCalField(sys);

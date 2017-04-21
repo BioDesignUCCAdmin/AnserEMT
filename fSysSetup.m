@@ -18,23 +18,23 @@
 function sys = fSysSetup(sensorsToTrack, DAQType)
 
 % Adds adjacent directories to the workspace
+fTitle();
+
 addpath(genpath(pwd))
-
-
 
 if (nargin ~= 2)
     error('fSysSetup takes three arguements');
 end
 
-% Magnetic permeability of free space
-u0 = 4*pi*1e-7; 
+
 
 %% Define sensor parameters
 % Scaling vector for algortihm convergence. This vector is used to scales
 % the measured field strenths such that they lie within the same order of
 % magnitude as the model.
 fieldGain = ones(1,8) * 1e6;
-
+% Magnetic permeability of free space
+u0 = 4*pi*1e-7; 
 
 
 
@@ -173,8 +173,11 @@ G=repmat(f,2,1);
 %% NI DAQ Parameters
 % Initialise the DAQ unit and calculate the phase offsets between channels
 % due to the internal DAQ multiplexer
+fprintf('DAQ initialising\n');
 DAQ = fDAQSetup(Fs,sensorsToTrack, DAQType, length(t));
 DAQ_phase_offset = (2*pi*F/400000); % determines the phase offset introduced by the DAQ multiplexer
+fprintf('DAQ initialised\n');
+fprintf('DAQ Type %s\n', DAQType);
 
 
 
@@ -234,8 +237,7 @@ sys.G = G;
 sys.lqOptions = options;
 sys.residualThresh = resThreshold;
 
-sys.estimateInit = condInit;
-
+% Default selection
 sys.SensorNo = 1;
 
 % Preallocate memory for the sensor data
@@ -243,18 +245,14 @@ sys.zOffsetActive = 0;
 sys.BStoreActive = zeros(8, 49);
 sys.BScaleActive = [0,0,0,0,0,0,0,0];
 
-for i=1:sys.MaxSensors
-    index = i;
-    sys.zOffset(index) = 0;
-    sys.BStore(:,:,index) = zeros(8, 49);
-    sys.BScale(index, :) = [0,0,0,0,0,0,0,0];
-end
+fprintf('Initialising sensors\n');
 
-
-
+% Sets the initial position condition for all sensors
+sys.estimateInit = repmat(condInit, [sys.MaxSensors, 1]);
 
 % Load previously saved calibration data to the sys structure and save
 if (exist('data/sys.mat', 'file') == 2)
+    fprintf('Previous calibration data found\nLoading data file...\n')
     sysPrev = load('sys.mat');
     sysPrev = sysPrev.sys;
     for i=1:sys.MaxSensors
@@ -263,6 +261,7 @@ if (exist('data/sys.mat', 'file') == 2)
         sys.BScale(i,:) = sysPrev.BScale(i,:);
     end
 else
+    fprintf('No previous calibration data found\nGenerating strutures...\n')
     for i=1:sys.MaxSensors
         sys.zOffset(i) = 0;
         sys.BStore(:,:,i) = zeros(8, 49);
@@ -271,5 +270,6 @@ else
 end
 
 fSysSave(sys);
+fprintf('PASS: System initialised with sensors: %s \n', sprintf('%d ', sys.Sensors));
 
 end
