@@ -4,7 +4,8 @@
 % This code is licensed under the BSD 3-Clause License.
 
 % Run the system for a single sensor.
-% Use this script as a reference program for writing EMT applications.
+% Use this script as a reference program for writing EMT applications 
+% with OpenIGTLink support.
 
 
 
@@ -13,7 +14,7 @@
 sensorsToTrack = [1,2];
 refreshRate = 100;
 
-% Enable option for OpenIGTLink connection
+% Enable flag for OpenIGTLink connection
 igtEnable = 1;
 transformName = 'ProbeToTracker';
 

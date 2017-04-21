@@ -51,11 +51,11 @@ if nargin,
     end
 else
     % default message string
-    str = 'Stop tracking' ;
+    str = 'Click to stop tracking' ;
 end
 
 % create a msgbox displaying the string
-H = msgbox(str,'STOPTRACKING') ;
+H = msgbox(str,'STOP TRACKING') ;
 
 % create the two anonymous functions
 F.Stop = @() stopfun(H) ; % false if message box still exists
