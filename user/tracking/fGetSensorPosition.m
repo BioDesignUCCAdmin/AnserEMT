@@ -14,7 +14,7 @@ function sys = fGetSensorPosition(sys, sensorNo)
 
 
 
-% Select the sensor to process
+% Select the sensor to process. This loads in the specific calibration.
 sys = fSysSensor(sys, sensorNo);
 
 % If no sensor selected, raise error.

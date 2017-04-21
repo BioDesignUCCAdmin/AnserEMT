@@ -10,7 +10,7 @@
 
 % Settings for the tracking system
 % List of sensors to initialise.
-sensorsToTrack = [2,1];
+sensorsToTrack = [1,2];
 refreshRate = 100;
 
 % Enable option for OpenIGTLink connection
@@ -42,7 +42,7 @@ while (~FS.Stop())
    % Print the position vector on the command line. The format of the
    % vector is [x,y,z,theta,phi]
    sys = fSysDAQUpdate(sys);
-   sys = fGetSensorPosition(sys, sensorsToTrack(1));
+   sys = fGetSensorPosition(sys, 2);
    disp(sys.positionVector);
    
    % Prepare to transmit sensor position over network.
