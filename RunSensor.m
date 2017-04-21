@@ -4,24 +4,18 @@
 % This code is licensed under the BSD 3-Clause License.
 
 % Run the system for a single sensor.
-% Use this script as a starting point for writing applications with the
-% tracking system.
+% Use this script as a reference program for writing EMT applications.
 
 
 
 % Settings for the tracking system
-sensorToTrack = 2;
+% List of sensors to initialise.
+sensorsToTrack = [2,1];
 refreshRate = 100;
 
-% Enable OpenIGTLink connection
+% Enable option for OpenIGTLink connection
 igtEnable = 0;
 transformName = 'ProbeToTracker';
-
-
-% Variables for storing sys.positionVectors
-sys.positionVector = zeros(1, 5);
-igtTranform = zeros(4, 4, 1);
-
 
 %% Enable OpenIGTLink connection
 if(igtEnable == 1)
@@ -32,8 +26,8 @@ end
 % Initialise the tracking system. Channel 0 is always required.
 % Desired channels are passed in a single vector. For only one sensor the
 % vector [0, X] is passed, where X is the index of the desired sensor.
-sys = fSysSetup(['2'], 'nidaq6212');
-pause(3);
+sys = fSysSetup(sensorsToTrack, 'nidaq621X');
+pause(0.5);
 
 %% Main loop.
 % This loop is cancelled cleanly using the 3rd party stoploop function.
@@ -42,29 +36,21 @@ while (~FS.Stop())
    tic
    
    % Update the tracking system with new sample data from the DAQ.
-   % Resolve the position of the chosen sensor denoted by sensorNo
+   % Calculate the position of a specific sensor in sensorsToTrack.
    % Change the initial condition of the solver to the resolved position
    % (this will reduce solving time on each iteration)
    % Print the position vector on the command line. The format of the
    % vector is [x,y,z,theta,phi]
    sys = fSysDAQUpdate(sys);
-   sys = fGetSensorPosition(sys, sensorToTrack);
+   sys = fGetSensorPosition(sys, sensorsToTrack(1));
    sys.estimateInit1 = sys.positionVector;
    disp(sys.positionVector);
    
-   
-   
-      
-    
-   
-   % Prepare sys.positionVector for OpenIGTLink transmission
+   % Prepare to transmit sensor position over network.
    if(igtEnable == 1)
      
       % Rigid registration matrix.  
-      sys.registration = [   0.9996   -0.0169    0.0229   72.3403;...
-                      0.0174    0.9996   -0.0220  163.1285;...
-                     -0.0225    0.0224    0.9995 -114.8978;...
-                      0         0         0    1.0000];     
+      sys.registration = eye(4,4);    
    
       % Add pi to theta angle. This resolved pointing issues.
       sys.positionVector(4) = sys.positionVector(4) + pi;
@@ -82,8 +68,8 @@ while (~FS.Stop())
    end
 
    toc
+   % This pause is required to allow the DAQ background DMA to work.
    pause(0.001);
-   % Clear the screen.
    clc;
 end
 

@@ -16,6 +16,7 @@ sensorNo = input('Enter the sensor to Calibrate: ');
 
 % Select the desired sensor. This will also ensure the appropriate calibration
 % parameters are saved after calibration.
+sys = fSysSetup(sensorsToTrack, 'nidaq6212');
 sys = fSysSensor(sys, sensorNo);
 
 % Acquire the testpoints necessary for calibration.

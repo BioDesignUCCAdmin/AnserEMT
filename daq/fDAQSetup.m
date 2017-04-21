@@ -12,16 +12,23 @@ function DAQ = fDAQSetup(sampleFreq, sensors, DAQType, numSamples)
 
 
     
-% Fixes clock synchronisation issue with DAQmx 14.0+
-daq.reset
-daq.HardwareInfo.getInstance('DisableReferenceClockSynchronization',true);
-
+% Acquire the channels mapping for the DAQ currently in use.
 channelMap = fDAQMap(DAQType);
-DAQ = daq.createSession('ni');
+daq.reset;
 
-% For the Anser EMT system
-% Channel 1 is the emitter coil current sense.
-% Channels 2, 3...is connected to the amplifier output of a tracking sensor
+% National Instruments DAQ specific options.
+
+if strcmp(DAQType, 'nidaq621X') == 1
+    % Fixes clock synchronisation issue with DAQmx 14.0+ driver
+    daq.HardwareInfo.getInstance('DisableReferenceClockSynchronization',true);
+    % Create the National Instruments DAQ session
+    DAQ = daq.createSession('ni');
+else
+    error('DAQ Type %s is not valid', DAQType);
+end
+
+% Channel 0 is the emitter coil current sense. This is always initialised.
+% Channels 1, 2...are connected to the amplifier output of each sensor
 % Each channel is configured as a single-ended input.
 ch(1) = addAnalogInputChannel(DAQ,'Dev1', 0, 'Voltage');
 ch(1).TerminalConfig = 'SingleEnded';

@@ -15,7 +15,7 @@
 % OUTPUT:   
 %       sys         - A structure containing the system settings (dimensions,
 %                    constants, frequencies etc
-function sys = fSysSetup(sensors, DAQType)
+function sys = fSysSetup(sensorsToTrack, DAQType)
 
 % Adds adjacent directories to the workspace
 addpath(genpath(pwd))
@@ -173,7 +173,7 @@ G=repmat(f,2,1);
 %% NI DAQ Parameters
 % Initialise the DAQ unit and calculate the phase offsets between channels
 % due to the internal DAQ multiplexer
-DAQ = fDAQSetup(Fs,sensors, DAQType, length(t));
+DAQ = fDAQSetup(Fs,sensorsToTrack, DAQType, length(t));
 DAQ_phase_offset = (2*pi*F/400000); % determines the phase offset introduced by the DAQ multiplexer
 
 
@@ -222,8 +222,8 @@ sys.Fs = Fs;
 sys.DAQType = DAQType;
 sys.NIDAQ = DAQ;
 sys.DAQPhase = DAQ_phase_offset;
-sys.rawData = zeros(numSamples,length(sensors));
-sys.Sensors = sensors;
+sys.rawData = zeros(numSamples,length(sensorsToTrack));
+sys.Sensors = sensorsToTrack;
 sys.MaxSensors = 16;
 
 sys.t = t;

@@ -7,9 +7,9 @@
 % Use this script as a starting point for visually inspecting the field
 % strengths of the tracking system.
 
-% Channel no of the DAQ to inspect. Channel 0 is the current summer.
-channelNo = 0;
-refreshRate = 20;
+% Channel no of the DAQ to inspect. Look at the DAQ pin mapping
+channelNo = 2;
+refreshRate = 200;
 
 
 figure;

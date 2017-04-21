@@ -14,12 +14,12 @@ function channelMap = fDAQMap(DAQType)
 % National Instruments NI6212/6216 have been already included.
 
 % Use a map structure to link channel indices to physical DAQ channels.
-ch = containers.Map;
+ch = containers.Map('KeyType','double','ValueType','double');
 
-if strcmp(DAQType, 'nidaq6212') == 1
-    ch('0') = 0;
-    ch('1') = 1;
-    ch('2') = 4;
+if strcmp(DAQType, 'nidaq621X') == 1
+    ch(0) = 0;
+    ch(1) = 1;
+    ch(2) = 4;
     % Add additional sensor
     
 elseif strcmp(DAQType, 'mccdaq') == 1
