@@ -18,9 +18,9 @@
 function sys = fSysSetup(sensorsToTrack, DAQType)
 
 % Adds adjacent directories to the workspace
+addpath(genpath(pwd))
 fTitle();
 
-addpath(genpath(pwd))
 
 if (nargin ~= 2)
     error('fSysSetup takes three arguements');

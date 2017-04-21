@@ -17,17 +17,20 @@ refreshRate = 100;
 igtEnable = 1;
 transformName = 'ProbeToTracker';
 
-%% Enable OpenIGTLink connection
-if(igtEnable == 1)
-    slicerConnection = igtlConnect('127.0.0.1', 18944);
-    transform.name = transformName;
-end
 
 % Initialise the tracking system. Channel 0 is always required.
 % Desired channels are passed in a single vector. For only one sensor the
 % vector [0, X] is passed, where X is the index of the desired sensor.
 sys = fSysSetup(sensorsToTrack, 'nidaq621X');
 pause(0.5);
+
+
+%% Enable OpenIGTLink connection
+if(igtEnable == 1)
+    slicerConnection = igtlConnect('127.0.0.1', 18944);
+    transform.name = transformName;
+end
+
 
 %% Main loop.
 % This loop is cancelled cleanly using the 3rd party stoploop function.
